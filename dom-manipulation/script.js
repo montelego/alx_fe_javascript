@@ -17,9 +17,14 @@ let quotes = [
   document.getElementById("importFile").addEventListener("change", importFromJsonFile);
   
   function showRandomQuote() {
-    const randomIndex = Math.floor(Math.random() * quotes.length);
-    const quoteDisplay = document.getElementById("quoteDisplay");
-    quoteDisplay.innerText = quotes[randomIndex].text;
+    const filteredQuotes = getFilteredQuotes();
+    if (filteredQuotes.length > 0) {
+      const randomIndex = Math.floor(Math.random() * filteredQuotes.length);
+      const quoteDisplay = document.getElementById("quoteDisplay");
+      quoteDisplay.innerText = filteredQuotes[randomIndex].text;
+    } else {
+      quoteDisplay.innerText = "No quotes available for this category.";
+    }
   }
   
   function addQuote() {
@@ -62,15 +67,12 @@ let quotes = [
   }
   
   function filterQuotes() {
+    showRandomQuote();
+  }
+  
+  function getFilteredQuotes() {
     const selectedCategory = document.getElementById("categoryFilter").value;
-    const quoteDisplay = document.getElementById("quoteDisplay");
-    const filteredQuotes = selectedCategory === "all" ? quotes : quotes.filter(quote => quote.category === selectedCategory);
-    if (filteredQuotes.length > 0) {
-      const randomIndex = Math.floor(Math.random() * filteredQuotes.length);
-      quoteDisplay.innerText = filteredQuotes[randomIndex].text;
-    } else {
-      quoteDisplay.innerText = "No quotes available for this category.";
-    }
+    return selectedCategory === "all" ? quotes : quotes.filter(quote => quote.category === selectedCategory);
   }
   
   function exportToJsonFile() {
