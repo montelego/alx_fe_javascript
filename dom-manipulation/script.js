@@ -25,12 +25,12 @@ let quotes = [
   function addQuote() {
     const newQuoteText = document.getElementById("newQuoteText").value;
     const newQuoteCategory = document.getElementById("newQuoteCategory").value;
-    
+  
     if (newQuoteText && newQuoteCategory) {
       quotes.push({ text: newQuoteText, category: newQuoteCategory });
       saveQuotes();
       populateCategories();
-      filterQuotes(); // Show filtered quotes after adding a new quote
+      filterQuotes();
       document.getElementById("newQuoteText").value = "";
       document.getElementById("newQuoteCategory").value = "";
     } else {
@@ -91,7 +91,7 @@ let quotes = [
       quotes.push(...importedQuotes);
       saveQuotes();
       populateCategories();
-      filterQuotes(); // Update display after importing
+      filterQuotes();
       alert('Quotes imported successfully!');
     };
     fileReader.readAsText(event.target.files[0]);
@@ -99,43 +99,46 @@ let quotes = [
   
   async function fetchQuotesFromServer() {
     try {
-      const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+      const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
       const data = await response.json();
       const serverQuotes = data.slice(0, 5).map(post => ({ text: post.title, category: "Server" }));
       quotes.push(...serverQuotes);
       saveQuotes();
       populateCategories();
-      filterQuotes(); // Update display after fetching from server
+      filterQuotes();
     } catch (error) {
       console.error("Error fetching quotes from server:", error);
     }
   }
   
   function createAddQuoteForm() {
-    // Assuming this function should handle creating and displaying the form dynamically
     const formContainer = document.createElement('div');
-    
+  
     const quoteInput = document.createElement('input');
     quoteInput.id = 'newQuoteText';
     quoteInput.type = 'text';
     quoteInput.placeholder = 'Enter a new quote';
     formContainer.appendChild(quoteInput);
-    
+  
     const categoryInput = document.createElement('input');
     categoryInput.id = 'newQuoteCategory';
     categoryInput.type = 'text';
     categoryInput.placeholder = 'Enter quote category';
     formContainer.appendChild(categoryInput);
-    
+  
     const addButton = document.createElement('button');
     addButton.id = 'addQuoteButton';
     addButton.textContent = 'Add Quote';
     addButton.onclick = addQuote;
     formContainer.appendChild(addButton);
-    
+  
     document.body.appendChild(formContainer);
   }
   
-  // Call the createAddQuoteForm function to create and display the form
   createAddQuoteForm();
   
