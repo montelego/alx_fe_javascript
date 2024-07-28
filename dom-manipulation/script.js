@@ -5,6 +5,7 @@ let quotes = [
   
   document.addEventListener("DOMContentLoaded", () => {
     loadQuotes();
+    fetchQuotesFromServer();
     populateCategories();
     showRandomQuote();
   });
@@ -95,3 +96,44 @@ let quotes = [
     };
     fileReader.readAsText(event.target.files[0]);
   }
+  
+  function fetchQuotesFromServer() {
+    // Simulate fetching quotes from a server
+    const serverQuotes = [
+      { text: "Success is not final, failure is not fatal: It is the courage to continue that counts.", category: "Success" },
+      { text: "Your time is limited, don't waste it living someone else's life.", category: "Life" },
+    ];
+    
+    quotes.push(...serverQuotes);
+    saveQuotes();
+    populateCategories();
+    filterQuotes(); // Update display after fetching from server
+  }
+  
+  function createAddQuoteForm() {
+    // Assuming this function should handle creating and displaying the form dynamically
+    const formContainer = document.createElement('div');
+    
+    const quoteInput = document.createElement('input');
+    quoteInput.id = 'newQuoteText';
+    quoteInput.type = 'text';
+    quoteInput.placeholder = 'Enter a new quote';
+    formContainer.appendChild(quoteInput);
+    
+    const categoryInput = document.createElement('input');
+    categoryInput.id = 'newQuoteCategory';
+    categoryInput.type = 'text';
+    categoryInput.placeholder = 'Enter quote category';
+    formContainer.appendChild(categoryInput);
+    
+    const addButton = document.createElement('button');
+    addButton.id = 'addQuoteButton';
+    addButton.textContent = 'Add Quote';
+    addButton.onclick = addQuote;
+    formContainer.appendChild(addButton);
+    
+    document.body.appendChild(formContainer);
+  }
+  
+  // Call the createAddQuoteForm function to create and display the form
+  createAddQuoteForm();
