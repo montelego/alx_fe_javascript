@@ -97,17 +97,18 @@ let quotes = [
     fileReader.readAsText(event.target.files[0]);
   }
   
-  function fetchQuotesFromServer() {
-    // Simulate fetching quotes from a server
-    const serverQuotes = [
-      { text: "Success is not final, failure is not fatal: It is the courage to continue that counts.", category: "Success" },
-      { text: "Your time is limited, don't waste it living someone else's life.", category: "Life" },
-    ];
-    
-    quotes.push(...serverQuotes);
-    saveQuotes();
-    populateCategories();
-    filterQuotes(); // Update display after fetching from server
+  async function fetchQuotesFromServer() {
+    try {
+      const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+      const data = await response.json();
+      const serverQuotes = data.slice(0, 5).map(post => ({ text: post.title, category: "Server" }));
+      quotes.push(...serverQuotes);
+      saveQuotes();
+      populateCategories();
+      filterQuotes(); // Update display after fetching from server
+    } catch (error) {
+      console.error("Error fetching quotes from server:", error);
+    }
   }
   
   function createAddQuoteForm() {
@@ -137,3 +138,4 @@ let quotes = [
   
   // Call the createAddQuoteForm function to create and display the form
   createAddQuoteForm();
+  
