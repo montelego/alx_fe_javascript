@@ -1,7 +1,6 @@
 let quotes = [
     { text: "The only limit to our realization of tomorrow is our doubts of today.", category: "Inspiration" },
     { text: "Life is 10% what happens to us and 90% how we react to it.", category: "Life" },
-    // Add more quotes if needed
   ];
   
   document.addEventListener("DOMContentLoaded", () => {
@@ -11,6 +10,10 @@ let quotes = [
   });
   
   document.getElementById("newQuote").addEventListener("click", showRandomQuote);
+  document.getElementById("addQuoteButton").addEventListener("click", addQuote);
+  document.getElementById("categoryFilter").addEventListener("change", filterQuotes);
+  document.getElementById("exportButton").addEventListener("click", exportToJsonFile);
+  document.getElementById("importFile").addEventListener("change", importFromJsonFile);
   
   function showRandomQuote() {
     const randomIndex = Math.floor(Math.random() * quotes.length);
@@ -26,6 +29,7 @@ let quotes = [
       quotes.push({ text: newQuoteText, category: newQuoteCategory });
       saveQuotes();
       populateCategories();
+      filterQuotes(); // Show filtered quotes after adding a new quote
       document.getElementById("newQuoteText").value = "";
       document.getElementById("newQuoteCategory").value = "";
     } else {
@@ -86,6 +90,7 @@ let quotes = [
       quotes.push(...importedQuotes);
       saveQuotes();
       populateCategories();
+      filterQuotes(); // Update display after importing
       alert('Quotes imported successfully!');
     };
     fileReader.readAsText(event.target.files[0]);
