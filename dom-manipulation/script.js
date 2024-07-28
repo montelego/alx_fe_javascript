@@ -8,6 +8,7 @@ let quotes = [
     fetchQuotesFromServer();
     populateCategories();
     showRandomQuote();
+    startSyncing();
   });
   
   document.getElementById("newQuote").addEventListener("click", showRandomQuote);
@@ -168,4 +169,37 @@ let quotes = [
   }
   
   createAddQuoteForm();
+  
+  function startSyncing() {
+    setInterval(syncQuotes, 30000); // Sync every 30 seconds
+  }
+  
+  async function syncQuotes() {
+    try {
+      const localQuotes = JSON.parse(localStorage.getItem('quotes')) || [];
+  
+      // Fetch latest quotes from server
+      const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      const data = await response.json();
+      const serverQuotes = data.slice(0, 5).map(post => ({ text: post.title, category: "Server" }));
+  
+      // Merge server quotes into local quotes
+      const mergedQuotes = [...localQuotes, ...serverQuotes];
+      localStorage.setItem('quotes', JSON.stringify(mergedQuotes));
+  
+      // Update the in-memory quotes array and refresh the UI
+      quotes = mergedQuotes;
+      populateCategories();
+      filterQuotes();
+  
+      console.log("Quotes synced successfully.");
+    } catch (error) {
+      console.error("Error syncing quotes:", error);
+    }
+  }
   
