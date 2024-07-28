@@ -27,17 +27,26 @@ let quotes = [
     }
   }
   
-  function addQuote() {
+  async function addQuote() {
     const newQuoteText = document.getElementById("newQuoteText").value;
     const newQuoteCategory = document.getElementById("newQuoteCategory").value;
   
     if (newQuoteText && newQuoteCategory) {
-      quotes.push({ text: newQuoteText, category: newQuoteCategory });
+      const newQuote = { text: newQuoteText, category: newQuoteCategory };
+      quotes.push(newQuote);
       saveQuotes();
       populateCategories();
       filterQuotes();
       document.getElementById("newQuoteText").value = "";
       document.getElementById("newQuoteCategory").value = "";
+  
+      try {
+        await postQuoteToServer(newQuote);
+        alert("Quote added and posted to server successfully.");
+      } catch (error) {
+        console.error("Error posting quote to server:", error);
+        alert("Quote added locally, but failed to post to server.");
+      }
     } else {
       alert("Please enter both a quote and a category.");
     }
@@ -118,6 +127,23 @@ let quotes = [
     }
   }
   
+  async function postQuoteToServer(quote) {
+    const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(quote)
+    });
+  
+    if (!response.ok) {
+      throw new Error("Failed to post quote to server");
+    }
+  
+    const data = await response.json();
+    console.log("Quote posted to server:", data);
+  }
+  
   function createAddQuoteForm() {
     const formContainer = document.createElement('div');
   
@@ -136,7 +162,6 @@ let quotes = [
     const addButton = document.createElement('button');
     addButton.id = 'addQuoteButton';
     addButton.textContent = 'Add Quote';
-    addButton.onclick = addQuote;
     formContainer.appendChild(addButton);
   
     document.body.appendChild(formContainer);
