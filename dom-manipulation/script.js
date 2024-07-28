@@ -197,7 +197,9 @@ let quotes = [
       populateCategories();
       filterQuotes();
   
-      console.log("Quotes synced successfully.");
+      // Notify user about sync
+      console.log("Quotes synced with server!");
+      alert("Quotes synced with server!");
     } catch (error) {
       console.error("Error syncing quotes:", error);
     }
